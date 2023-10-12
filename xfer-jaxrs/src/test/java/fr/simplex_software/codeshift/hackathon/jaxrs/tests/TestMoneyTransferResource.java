@@ -6,7 +6,6 @@ import io.quarkus.test.common.http.*;
 import io.quarkus.test.junit.*;
 import io.restassured.common.mapper.*;
 import io.restassured.http.*;
-import io.restassured.mapper.*;
 import io.restassured.response.*;
 import io.restassured.specification.*;
 import org.jboss.resteasy.reactive.*;
@@ -61,18 +60,18 @@ public class TestMoneyTransferResource
   public void testCreateMoneyTransferOrderEndpoint()
   {
     MoneyTransfer moneyTransfer = new MoneyTransfer("reference",
-      new BankAccount(new Bank(Arrays.asList(new BankAddress("rue de Paris", "24",
+      new BankAccount(new Bank(List.of(new BankAddress("rue de Paris", "24",
         "BP 100", "Soisy sous Montmorency", "95230", "France")),
         "Société Générale"), "accountId", BankAccountType.CHECKING, "sortCode",
         "accountNumber", "transCode"),
-      new BankAccount(new Bank(Arrays.asList(new BankAddress("Argyle Street", "201",
+      new BankAccount(new Bank(List.of(new BankAddress("Argyle Street", "201",
         "PO 258", "Glasgow", "G2 8BU", "UK")),
         "Bank of Scotland"), "accountId2", BankAccountType.CHECKING, "sortCode2",
         "accountNumber2", "transCode2"),
-      new BigDecimal(100.00));
+      new BigDecimal("100.00"));
     requestSpecification.when()
       .contentType(ContentType.JSON)
-      .body(moneyTransfer, ObjectMapperType.JSONB)
+      .body(moneyTransfer)
       .post()
       .then()
       .statusCode(RestResponse.StatusCode.CREATED)
@@ -119,18 +118,18 @@ public class TestMoneyTransferResource
   public void testUpdateMoneyTransferOrderEndpoint()
   {
     MoneyTransfer moneyTransfer = new MoneyTransfer("reference",
-      new BankAccount(new Bank(Arrays.asList(new BankAddress("rue de Paris", "24",
+      new BankAccount(new Bank(List.of(new BankAddress("rue de Paris", "24",
         "BP 100", "Soisy sous Montmorency", "95230", "France")),
         "Société Générale"), "accountId", BankAccountType.CHECKING, "sortCode",
         "accountNumber", "transCode"),
-      new BankAccount(new Bank(Arrays.asList(new BankAddress("Argyle Street", "201",
+      new BankAccount(new Bank(List.of(new BankAddress("Argyle Street", "201",
         "PO 258", "Glasgow", "G2 8BU", "UK")),
         "Bank of Scotland"), "accountId2", BankAccountType.CHECKING, "sortCode2",
         "accountNumber2", "transCode2"),
-      new BigDecimal(500.00));
+      new BigDecimal("500.00"));
     requestSpecification.when()
       .contentType(ContentType.JSON)
-      .body(moneyTransfer, ObjectMapperType.JSONB)
+      .body(moneyTransfer)
       .pathParam("ref", "reference")
       .put("{ref}")
       .then()

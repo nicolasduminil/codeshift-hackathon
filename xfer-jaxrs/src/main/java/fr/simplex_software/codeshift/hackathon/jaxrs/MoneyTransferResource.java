@@ -116,4 +116,9 @@ public class MoneyTransferResource
     moneyTransferFacade.deleteMoneyTransferOrder(reference);
     return Response.ok().build();
   }
+
+  public Response fallbackOfGetMoneyTransferOrder(String reference)
+  {
+    return Response.noContent().build();
+  }
 }
