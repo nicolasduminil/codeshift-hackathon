@@ -17,6 +17,8 @@
     <file url="file://$PROJECT_DIR$/xfer-orm/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xfer-provider/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xfer-provider/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xfer-repository/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xfer-repository/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xfer-s3/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xfer-s3/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xfer-sqs/src/main/java" charset="UTF-8" />

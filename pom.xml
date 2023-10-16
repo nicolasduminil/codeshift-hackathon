@@ -18,6 +18,7 @@
     <module>xfer-s3</module>
     <module>xfer-sqs</module>
     <module>xfer-jaxrs</module>
+    <module>xfer-repository</module>
   </modules>
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
