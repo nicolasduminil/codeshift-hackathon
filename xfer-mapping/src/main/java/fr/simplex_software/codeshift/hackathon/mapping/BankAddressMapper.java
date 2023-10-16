@@ -1,7 +1,7 @@
-package fr.simplex_software.codeshift.hackathon.provider.mapping;
+package fr.simplex_software.codeshift.hackathon.mapping;
 
 import fr.simplex_software.codeshift.hackathon.model.*;
-import fr.simplex_software.codeshift.hackathon.provider.jpa.*;
+import fr.simplex_software.codeshift.hackathon.orm.*;
 import org.mapstruct.*;
 
 @Mapper

@@ -1,4 +1,4 @@
-package fr.simplex_software.codeshift.hackathon.provider.jpa;
+package fr.simplex_software.codeshift.hackathon.orm;
 
 import fr.simplex_software.codeshift.hackathon.model.*;
 import jakarta.persistence.*;
