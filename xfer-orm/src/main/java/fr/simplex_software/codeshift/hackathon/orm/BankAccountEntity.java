@@ -40,6 +40,7 @@ public class BankAccountEntity extends BankAccount
   }
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name="BANK_ID")
   public BankEntity getBankEntity()
   {
     return bankEntity;
@@ -65,7 +66,7 @@ public class BankAccountEntity extends BankAccount
 
   @Override
   @Column(name = "ACCOUNT_TYPE")
-  @Enumerated
+  @Enumerated(EnumType.STRING)
   public BankAccountType getAccountType()
   {
     return super.getAccountType();

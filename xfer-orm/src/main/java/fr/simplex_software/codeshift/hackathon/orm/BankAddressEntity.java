@@ -118,6 +118,7 @@ public class BankAddressEntity extends BankAddress
   }
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name="BANK_ID")
   public BankEntity getBankEntity()
   {
     return bankEntity;
