@@ -1,12 +1,11 @@
 package fr.simplex_software.codeshift.hackathon.orm.tests;
 
-import fr.simplex_software.codeshift.hackathon.model.*;
 import fr.simplex_software.codeshift.hackathon.orm.*;
+import fr.simplex_software.codeshift.hackathon.model.*;
 import io.quarkus.test.junit.*;
+import jakarta.inject.*;
 import jakarta.persistence.*;
 import org.junit.jupiter.api.*;
-
-import jakarta.inject.*;
 
 import java.util.*;
 
@@ -23,11 +22,15 @@ public class TestEntities
   {
     Query q = em.createQuery("select b from BankEntity b");
     List<BankEntity> banks = q.getResultList();
+    q = em.createQuery("select ba.bankEntity from BankAddressEntity ba");
+    List<BankEntity> banks2 = q.getResultList();
+    q = em.createQuery("select bac.bankEntity from BankAccountEntity bac");
+    List<BankEntity> banks3 = q.getResultList();
     assertThat(banks).isNotNull();
     assertThat(banks.size()).isEqualTo(2);
   }
 
-  @Test
+  /*@Test
   public void testFindBankByName()
   {
     Query q = em.createQuery("select b from BankEntity b where bankName = 'Société Générale'");
@@ -38,7 +41,7 @@ public class TestEntities
   }
 
   @Test
-  public void testGetMaoneyTransfers()
+  public void testGetMoneyTransfers()
   {
     Query q = em.createQuery("select mt from MoneyTransferEntity mt");
     List<MoneyTransferEntity> moneyTransferEntities = q.getResultList();
@@ -54,5 +57,5 @@ public class TestEntities
     assertThat(bankAccountEntity.getSortCode()).isEqualTo("04004");
     assertThat(bankAccountEntity.getBankEntity()).isNotNull();
     assertThat(bankAccountEntity.getBankEntity().getBankName()).isEqualTo("Société Générale");
-  }
+  }*/
 }

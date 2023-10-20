@@ -16,8 +16,20 @@
       <artifactId>quarkus-hibernate-orm-panache</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-narayana-jta</artifactId>
+    </dependency>
+    <dependency>
       <groupId>fr.simplex-software.codeshift.hackathon</groupId>
       <artifactId>xfer-orm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>fr.simplex-software.codeshift.hackathon</groupId>
+      <artifactId>xfer-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>fr.simplex-software.codeshift.hackathon</groupId>
+      <artifactId>xfer-mapping</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

@@ -1,6 +1,6 @@
 package fr.simplex_software.codeshift.hackathon.orm;
 
-import fr.simplex_software.codeshift.hackathon.model.*;
+import jakarta.json.bind.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.*;
 import jakarta.validation.constraints.*;
@@ -10,10 +10,13 @@ import java.util.*;
 @Cacheable
 @Entity
 @Table(name = "BANKS")
-public class BankEntity extends Bank
+public class BankEntity
 {
   @NotNull
   private Long id;
+  @NotEmpty
+  @Size(max = 40)
+  private String bankName;
   @Valid
   private List<BankAddressEntity> bankAddressEntityList = new ArrayList<>();
   @Valid
@@ -21,17 +24,21 @@ public class BankEntity extends Bank
 
   public BankEntity()
   {
-    super();
   }
 
-  public BankEntity(@Valid List<BankAddress> bankAddresses, @NotBlank String bankName)
+  public BankEntity(@NotBlank String bankName, @Valid List<BankAddressEntity> bankAddressEntityList, @Valid List<BankAccountEntity> bankAccountEntityList)
   {
-    super(bankAddresses, bankName);
+    this.bankName = bankName;
+    this.bankAddressEntityList.clear();
+    this.bankAddressEntityList.addAll(bankAddressEntityList);
+    this.bankAccountEntityList.clear();
+    this.bankAccountEntityList.addAll(bankAccountEntityList);
   }
 
   @Id
   @SequenceGenerator(name = "bankSequence", sequenceName = "bankId_seq", allocationSize = 1, initialValue = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bankSequence")
+  @Column(name = "BANK_ID", nullable = false, updatable = false)
   public Long getId()
   {
     return id;
@@ -42,20 +49,19 @@ public class BankEntity extends Bank
     this.id = id;
   }
 
-  @Override
-  @Column(name = "BANK_NAME", nullable = false, updatable = false)
+  @Column(name = "BANK_NAME", nullable = false, length = 40)
   public String getBankName()
   {
-    return super.getBankName();
+    return bankName;
   }
 
-  @Override
   public void setBankName(String bankName)
   {
-    super.setBankName(bankName);
+    this.bankName = bankName;
   }
 
   @OneToMany(mappedBy = "bankEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonbTransient
   public List<BankAddressEntity> getBankAddressEntities()
   {
     return bankAddressEntityList;
@@ -79,6 +85,7 @@ public class BankEntity extends Bank
   }
 
   @OneToMany(mappedBy = "bankEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonbTransient
   public List<BankAccountEntity> getBankAccountEntities()
   {
     return bankAccountEntityList;

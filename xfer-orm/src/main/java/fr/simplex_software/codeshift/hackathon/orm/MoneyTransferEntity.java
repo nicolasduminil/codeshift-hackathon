@@ -6,32 +6,47 @@ import jakarta.validation.*;
 import jakarta.validation.constraints.*;
 
 import java.math.*;
+import java.util.*;
 
 @Cacheable
 @Entity
 @Table(name = "MONEY_TRANSFER_ORDERS")
-public class MoneyTransferEntity extends MoneyTransfer
+public class MoneyTransferEntity
 {
   @NotNull
   private Long id;
-  @Valid
-  private BankAccountEntity targetBankAccountEntity;
-  @Valid
+  @NotBlank
+  @Size(max = 25)
+  private String reference;
+  @DecimalMin(value = "0")
+  private BigDecimal amount;
+  @NotNull
   private BankAccountEntity sourceBankAccountEntity;
+  @NotNull
+  private BankAccountEntity targetBankAccountEntity;
 
   public MoneyTransferEntity()
   {
-    super();
   }
 
-  public MoneyTransferEntity(@NotBlank String reference, @Valid BankAccount sourceAccount, @Valid BankAccount targetAccount, @DecimalMin("1.0") BigDecimal amount)
+  public MoneyTransferEntity(String reference, BigDecimal amount)
   {
-    super(reference, sourceAccount, targetAccount, amount);
+    this.reference = reference;
+    this.amount = amount;
+  }
+
+  public MoneyTransferEntity(String reference, BigDecimal amount, BankAccountEntity sourceBankAccountEntity, BankAccountEntity targetBankAccountEntity)
+  {
+    this.reference = reference;
+    this.amount = amount;
+    this.sourceBankAccountEntity = sourceBankAccountEntity;
+    this.targetBankAccountEntity = targetBankAccountEntity;
   }
 
   @Id
   @SequenceGenerator(name = "moneyTransferSequence", sequenceName = "moneyTransferId_seq", allocationSize = 1, initialValue = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moneyTransferSequence")
+  @Column(name = "MONEY_TRANSFER_ID", nullable = false, updatable = false)
   public Long getId()
   {
     return id;
@@ -42,53 +57,49 @@ public class MoneyTransferEntity extends MoneyTransfer
     this.id = id;
   }
 
-  @Override
-  @Column(name = "MONEY_TRANSFER_ORDER_REF", nullable = false)
+  @Column(name = "MONEY_TRANSFER_ORDER_REF", length = 25)
   public String getReference()
   {
-    return super.getReference();
+    return reference;
   }
 
-  @Override
   public void setReference(String reference)
   {
-    super.setReference(reference);
+    this.reference = reference;
   }
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id")
+  @Column(name = "MONEY_TRANSFER_AMOUNT", nullable = false)
+  public BigDecimal getAmount()
+  {
+    return amount;
+  }
+
+  public void setAmount(BigDecimal amount)
+  {
+    this.amount = amount;
+  }
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "SOURCE_BANK_ACCOUNT_ID")
   public BankAccountEntity getSourceBankAccountEntity()
   {
     return sourceBankAccountEntity;
   }
 
-  public void setSourceBankAccountEntity(@Valid BankAccountEntity sourceBankAccountEntity)
+  public void setSourceBankAccountEntity(@NotNull BankAccountEntity sourceBankAccountEntity)
   {
     this.sourceBankAccountEntity = sourceBankAccountEntity;
   }
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id")
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "TARGET_BANK_ACCOUNT_ID")
   public BankAccountEntity getTargetBankAccountEntity()
   {
     return targetBankAccountEntity;
   }
 
-  public void setTargetBankAccountEntity(@Valid BankAccountEntity targetBankAccountEntity)
+  public void setTargetBankAccountEntity(BankAccountEntity targetBankAccountEntity)
   {
     this.targetBankAccountEntity = targetBankAccountEntity;
-  }
-
-  @Override
-  @Column(name = "MONEY_TRANSFER_AMOUNT", nullable = false)
-  public BigDecimal getAmount()
-  {
-    return super.getAmount();
-  }
-
-  @Override
-  public void setAmount(BigDecimal amount)
-  {
-    super.setAmount(amount);
   }
 }

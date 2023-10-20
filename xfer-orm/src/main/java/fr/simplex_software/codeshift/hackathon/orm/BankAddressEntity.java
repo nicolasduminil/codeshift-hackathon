@@ -4,31 +4,55 @@ import fr.simplex_software.codeshift.hackathon.model.*;
 import jakarta.persistence.*;
 import jakarta.validation.*;
 import jakarta.validation.constraints.*;
+import jakarta.xml.bind.annotation.*;
 
 @Cacheable
 @Entity
 @Table(name = "BANK_ADDRESSES")
-public class BankAddressEntity extends BankAddress
+public class BankAddressEntity
 {
   @NotNull
   private Long id;
+  @NotBlank
+  @Size(max = 30)
+  private String streetName;
+  @NotBlank
+  @Size(max = 5)
+  private String streetNumber;
+  @NotBlank
+  @Size(max = 10)
+  private String poBox;
+  @NotBlank
+  @Size(max = 20)
+  private String cityName;
+  @NotBlank
+  @Size(max = 5)
+  private String zipCode;
+  @NotBlank
+  @Size(max = 20)
+  private String countryName;
   @Valid
   private BankEntity bankEntity;
 
   public BankAddressEntity()
   {
-    super();
   }
 
-  public BankAddressEntity(@NotBlank String streetName, @NotBlank String streetNumber, @NotBlank String poBox, @NotBlank String cityName, @NotBlank String zipCode, @NotBlank String countryName)
+  public BankAddressEntity(String streetName, String streetNumber, String poBox, String cityName, String zipCode, String countryName, BankEntity bankEntity)
   {
-    super(streetName, streetNumber, poBox, cityName, zipCode, countryName);
+    this.streetName = streetName;
+    this.streetNumber = streetNumber;
+    this.poBox = poBox;
+    this.cityName = cityName;
+    this.zipCode = zipCode;
+    this.countryName = countryName;
+    this.bankEntity = bankEntity;
   }
 
   @Id
   @SequenceGenerator(name = "bankAddressSequence", sequenceName = "bankAddressId_seq", allocationSize = 1, initialValue = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bankAddressSequence")
-  @Column(name = "ID", nullable = false, updatable = false)
+  @Column(name = "BANK_ADDRESS_ID", nullable = false, updatable = false)
   public Long getId()
   {
     return id;
@@ -39,82 +63,70 @@ public class BankAddressEntity extends BankAddress
     this.id = id;
   }
 
-  @Override
-  @Column(name = "STREET_NAME", nullable = false)
+  @Column(name = "STREET_NAME", length = 30)
   public String getStreetName()
   {
-    return super.getStreetName();
+    return streetName;
   }
 
-  @Override
-  public void setStreetName(String value)
+  public void setStreetName(String streetName)
   {
-    super.setStreetName(value);
+    this.streetName = streetName;
   }
 
-  @Override
-  @Column(name = "STREET_NUMBER", nullable = false)
+  @Column(name = "STREET_NUMBER", length = 5)
   public String getStreetNumber()
   {
-    return super.getStreetNumber();
+    return streetNumber;
   }
 
-  @Override
-  public void setStreetNumber(String value)
+  public void setStreetNumber(String streetNumber)
   {
-    super.setStreetNumber(value);
+    this.streetNumber = streetNumber;
   }
 
-  @Override
-  @Column(name = "PO_BOX", nullable = false, updatable = false)
+  @Column(name = "PO_BOX", length = 10)
   public String getPoBox()
   {
-    return super.getPoBox();
+    return poBox;
   }
 
-  @Override
-  public void setPoBox(String value)
+  public void setPoBox(String poBox)
   {
-    super.setPoBox(value);
+    this.poBox = poBox;
   }
 
-  @Override
-  @Column(name = "CITY_NAME", nullable = false)
+  @Column(name = "CITY_NAME", length = 20)
   public String getCityName()
   {
-    return super.getCityName();
+    return cityName;
   }
 
-  @Override
-  public void setCityName(String value)
+  public void setCityName(String cityName)
   {
-    super.setCityName(value);
+    this.cityName = cityName;
   }
 
-  @Override
-  @Column(name = "ZIP_CODE", nullable = false)
+  @Column(name = "ZIP_CODE", length = 5)
   public String getZipCode()
   {
-    return super.getZipCode();
+    return zipCode;
   }
 
-  @Override
-  public void setZipCode(String value)
+  public void setZipCode(String zipCode)
   {
-    super.setZipCode(value);
+    this.zipCode = zipCode;
   }
 
-  @Override
-  @Column(name = "COUNTRY_NAME", nullable = false)
+  @Column(name = "COUNTRY_NAME", length = 20)
   public String getCountryName()
   {
-    return super.getCountryName();
+    return countryName;
   }
 
-  @Override
-  public void setCountryName(String value)
+  public void setCountryName(String countryName)
   {
-    super.setCountryName(value);
+    this.countryName = countryName;
   }
 
   @ManyToOne(fetch = FetchType.LAZY)
