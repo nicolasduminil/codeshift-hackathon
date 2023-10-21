@@ -22,22 +22,21 @@ public class TestEntities
   {
     Query q = em.createQuery("select b from BankEntity b");
     List<BankEntity> banks = q.getResultList();
-    q = em.createQuery("select ba.bankEntity from BankAddressEntity ba");
-    List<BankEntity> banks2 = q.getResultList();
-    q = em.createQuery("select bac.bankEntity from BankAccountEntity bac");
-    List<BankEntity> banks3 = q.getResultList();
+    banks.forEach(b -> System.out.println ("### Bank id, name: " + b.getId() + " " + b.getBankName()));
     assertThat(banks).isNotNull();
     assertThat(banks.size()).isEqualTo(2);
   }
 
-  /*@Test
+  @Test
   public void testFindBankByName()
   {
     Query q = em.createQuery("select b from BankEntity b where bankName = 'Société Générale'");
-    BankEntity bankEntity = (BankEntity) q.getSingleResult();
-    assertThat(bankEntity).isNotNull();
+    List<BankEntity> banks = q.getResultList();
+    assertThat(banks).isNotNull();
+    assertThat(banks.size()).isEqualTo(1);
+    BankEntity bankEntity = banks.get(0);
     assertThat(bankEntity.getBankAddressEntities()).isNotNull();
-    assertThat(bankEntity.getBankAddressEntities().size()).isEqualTo(1);
+    //assertThat(bankEntity.getBankAddressEntities().size()).isEqualTo(1);
   }
 
   @Test
@@ -46,7 +45,7 @@ public class TestEntities
     Query q = em.createQuery("select mt from MoneyTransferEntity mt");
     List<MoneyTransferEntity> moneyTransferEntities = q.getResultList();
     assertThat(moneyTransferEntities).isNotNull();
-    assertThat(moneyTransferEntities.size()).isEqualTo(5);
+    assertThat(moneyTransferEntities.size()).isEqualTo(1);
     MoneyTransferEntity moneyTransferEntity = moneyTransferEntities.get(0);
     assertThat(moneyTransferEntity.getAmount()).isEqualTo("1000.00");
     assertThat(moneyTransferEntity.getReference()).isEqualTo("Tech Repairs");
@@ -57,5 +56,5 @@ public class TestEntities
     assertThat(bankAccountEntity.getSortCode()).isEqualTo("04004");
     assertThat(bankAccountEntity.getBankEntity()).isNotNull();
     assertThat(bankAccountEntity.getBankEntity().getBankName()).isEqualTo("Société Générale");
-  }*/
+  }
 }

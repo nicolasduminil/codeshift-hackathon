@@ -80,7 +80,7 @@ public class MoneyTransferEntity
   }
 
   @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
-  @JoinColumn(name = "SOURCE_BANK_ACCOUNT_ID", unique = true)
+  @JoinColumn(name = "SOURCE_BANK_ACCOUNT_ID", unique = false)
   public BankAccountEntity getSourceBankAccountEntity()
   {
     return sourceBankAccountEntity;
@@ -92,7 +92,7 @@ public class MoneyTransferEntity
   }
 
   @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
-  @JoinColumn(name = "TARGET_BANK_ACCOUNT_ID", unique = true)
+  @JoinColumn(name = "TARGET_BANK_ACCOUNT_ID", unique = false)
   public BankAccountEntity getTargetBankAccountEntity()
   {
     return targetBankAccountEntity;

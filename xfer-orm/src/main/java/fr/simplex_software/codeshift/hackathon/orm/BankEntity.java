@@ -56,13 +56,14 @@ public class BankEntity
   }
 
   @ElementCollection
-  @CollectionTable (name = "BANK_ADDRESSES")
+  @CollectionTable (name = "BANK_ADDRESSES", joinColumns=@JoinColumn(name = "BANK_ADDRESS_ID", referencedColumnName = "BANK_ID"))
   @AttributeOverride(name = "streetName", column = @Column (name = "STREET_NAME", nullable = false, length = 80))
   @AttributeOverride(name = "streetNumber", column = @Column (name = "STREET_NUMBER", nullable = false, length = 10))
   @AttributeOverride(name = "cityName", column = @Column (name = "CITY_NAME", nullable = false, length = 40))
   @AttributeOverride(name = "poBox", column = @Column (name = "PO_BOX", nullable = false, length = 10))
   @AttributeOverride(name = "zipCode", column = @Column (name = "ZIP_CODE", nullable = false, length = 10))
   @AttributeOverride(name = "countryName", column = @Column (name = "COUNTRY_NAME", nullable = false, length = 20))
+  @Column(name = "BANK_ADDRESS_ID")
   public List<BankAddressEntity> getBankAddressEntities()
   {
     return bankAddressEntityList;
