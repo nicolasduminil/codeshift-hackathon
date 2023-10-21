@@ -45,7 +45,7 @@ public class TestEntities
     Query q = em.createQuery("select mt from MoneyTransferEntity mt");
     List<MoneyTransferEntity> moneyTransferEntities = q.getResultList();
     assertThat(moneyTransferEntities).isNotNull();
-    assertThat(moneyTransferEntities.size()).isEqualTo(1);
+    assertThat(moneyTransferEntities.size()).isEqualTo(5);
     MoneyTransferEntity moneyTransferEntity = moneyTransferEntities.get(0);
     assertThat(moneyTransferEntity.getAmount()).isEqualTo("1000.00");
     assertThat(moneyTransferEntity.getReference()).isEqualTo("Tech Repairs");
