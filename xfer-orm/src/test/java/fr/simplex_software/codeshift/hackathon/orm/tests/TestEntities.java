@@ -5,19 +5,23 @@ import fr.simplex_software.codeshift.hackathon.model.*;
 import io.quarkus.test.junit.*;
 import jakarta.inject.*;
 import jakarta.persistence.*;
+import jakarta.transaction.*;
 import org.junit.jupiter.api.*;
 
+import java.math.*;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 @QuarkusTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestEntities
 {
   @Inject
   private EntityManager em;
 
   @Test
+  @Order(10)
   public void testGetAllBanks()
   {
     Query q = em.createQuery("select b from BankEntity b");
@@ -28,6 +32,7 @@ public class TestEntities
   }
 
   @Test
+  @Order(20)
   public void testFindBankByName()
   {
     Query q = em.createQuery("select b from BankEntity b where bankName = 'Société Générale'");
@@ -40,6 +45,7 @@ public class TestEntities
   }
 
   @Test
+  @Order(30)
   public void testGetMoneyTransfers()
   {
     Query q = em.createQuery("select mt from MoneyTransferEntity mt");
@@ -56,5 +62,23 @@ public class TestEntities
     assertThat(bankAccountEntity.getSortCode()).isEqualTo("04004");
     assertThat(bankAccountEntity.getBankEntity()).isNotNull();
     assertThat(bankAccountEntity.getBankEntity().getBankName()).isEqualTo("Société Générale");
+  }
+
+  @Test
+  @Order(40)
+  @Transactional
+  public void testCreateNewMoneyTransfer()
+  {
+    MoneyTransferEntity moneyTransferEntity = new MoneyTransferEntity("reference", new BigDecimal("100.00"),
+      new BankAccountEntity(new BankEntity("bankName", List.of(new BankAddressEntity("streetName", "10",
+        "poBox", "cityName", "zipCode", "countryName"))), "accountId", BankAccountType.CHECKING, "sortCode", "accountNumber", "transCode"),
+      new BankAccountEntity(new BankEntity("bankName", List.of(new BankAddressEntity("streetName", "10",
+        "poBox", "cityName", "zipCode", "countryName"))), "accountId", BankAccountType.CHECKING, "sortCode", "accountNumber", "transCode"));
+    em.persist(moneyTransferEntity);
+    Query q = em.createQuery("select mt from MoneyTransferEntity mt");
+    List<MoneyTransferEntity> moneyTransferEntities = q.getResultList();
+    assertThat(moneyTransferEntities).isNotNull();
+    assertThat(moneyTransferEntities.size()).isEqualTo(6);
+
   }
 }

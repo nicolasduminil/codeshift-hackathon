@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -23,52 +24,17 @@ public class TestMoneyTransferRepository
   @Inject
   MoneyTransferRepository moneyTransferRepository;
 
-
-  /*@Test
-  @Order(1)
-  public void testDeleteAllMoneyTransferOrders() throws Exception
-  {
-    tx.begin();
-    moneyTransferRepository.deleteAll();
-    tx.commit();
-  }*/
-
   @Test
   @Order(10)
   @Transactional
   public void testInsertMoneyTransferOrders() throws Exception
   {
-    /*List<MoneyTransferEntity> moneyTransferEntities = getMoneyTransferOrders();
-    //moneyTransferRepository.persist(moneyTransferEntities.stream());
-   moneyTransferEntities.forEach(mt ->
-    {
-      try
-      {
-        System.out.println ("*** Persisting " + mt.getReference() + " with ID " + mt.getId());
-        tx.begin();
-        moneyTransferRepository.getEntityManager().merge(mt);
-        tx.commit();
-        System.out.println ("*** Persisted " + mt.getReference()+ " with ID " + mt.getId());
-      }
-      catch (Exception e)
-      {
-        System.out.println ("*** Could not persist " + mt.getReference() + " with ID " + mt.getId() + " because of " + e);
-        try
-        {
-          tx.rollback();
-        }
-        catch (SystemException ex)
-        {
-          throw new RuntimeException(ex);
-        }
-      }
-    });*/
     MoneyTransferEntity moneyTransferEntity = new MoneyTransferEntity("reference", new BigDecimal("100.00"),
       new BankAccountEntity(new BankEntity("bankName", List.of(new BankAddressEntity("streetName", "10",
         "poBox", "cityName", "zipCode", "countryName"))), "accountId", BankAccountType.CHECKING, "sortCode", "accountNumber", "transCode"),
       new BankAccountEntity(new BankEntity("bankName", List.of(new BankAddressEntity("streetName", "10",
         "poBox", "cityName", "zipCode", "countryName"))), "accountId", BankAccountType.CHECKING, "sortCode", "accountNumber", "transCode"));
-  moneyTransferRepository.getEntityManager().persist(moneyTransferEntity);
+    assertDoesNotThrow(() -> moneyTransferRepository.getEntityManager().persist(moneyTransferEntity));
   }
 
   @Test
@@ -77,7 +43,16 @@ public class TestMoneyTransferRepository
   {
     List<MoneyTransferEntity> moneyTransferEntityList = moneyTransferRepository.findAll().list();
     assertThat(moneyTransferEntityList).isNotNull();
-    assertThat(moneyTransferEntityList.size()).isEqualTo(7);
-    moneyTransferEntityList.forEach(mte -> System.out.println("### mte: " + mte.getReference()));
+    assertThat(moneyTransferEntityList.size()).isEqualTo(6);
+    MoneyTransferEntity moneyTransferEntity = moneyTransferEntityList.get(0);
+    assertThat(moneyTransferEntity.getAmount()).isEqualTo("1000.00");
+    assertThat(moneyTransferEntity.getReference()).isEqualTo("Tech Repairs");
+    assertThat(moneyTransferEntity.getSourceBankAccountEntity()).isNotNull();
+    assertThat(moneyTransferEntity.getTargetBankAccountEntity()).isNotNull();
+    BankAccountEntity bankAccountEntity = moneyTransferEntity.getSourceBankAccountEntity();
+    assertThat((bankAccountEntity.getAccountType())).isEqualTo(BankAccountType.CHECKING);
+    assertThat(bankAccountEntity.getSortCode()).isEqualTo("04004");
+    assertThat(bankAccountEntity.getBankEntity()).isNotNull();
+    assertThat(bankAccountEntity.getBankEntity().getBankName()).isEqualTo("Société Générale");
   }
 }

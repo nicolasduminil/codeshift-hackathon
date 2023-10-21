@@ -20,7 +20,7 @@ public class BankAddressEntity
   @Size(max = 20)
   private String cityName;
   @NotBlank
-  @Size(max = 5)
+  @Size(max = 10)
   private String zipCode;
   @NotBlank
   @Size(max = 20)
