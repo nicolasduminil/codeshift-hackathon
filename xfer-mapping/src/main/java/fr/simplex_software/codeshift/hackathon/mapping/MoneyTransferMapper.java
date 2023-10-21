@@ -16,4 +16,6 @@ public interface MoneyTransferMapper
   @Mapping(target = "targetBankAccountEntity", source = "targetAccount")
   @Mapping(target = "id", ignore = true)
   MoneyTransferEntity toEntity (MoneyTransfer moneyTransfer);
-}
+  @Mapping(target="id", ignore = true)
+  MoneyTransferEntity copyMoneyTransferEntity (MoneyTransferEntity moneyTransferEntity);
+  MoneyTransfer copyMoneyTransfer (MoneyTransfer moneyTransfer);}

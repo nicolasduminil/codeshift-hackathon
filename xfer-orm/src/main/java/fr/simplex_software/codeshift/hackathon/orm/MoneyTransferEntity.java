@@ -46,7 +46,7 @@ public class MoneyTransferEntity
   @Id
   @SequenceGenerator(name = "moneyTransferSequence", sequenceName = "moneyTransferId_seq", allocationSize = 1, initialValue = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moneyTransferSequence")
-  @Column(name = "MONEY_TRANSFER_ID", nullable = false, updatable = false)
+  @Column(name = "MONEY_TRANSFER_ID", unique = true, nullable = false, updatable = false, length = 8)
   public Long getId()
   {
     return id;
@@ -79,8 +79,8 @@ public class MoneyTransferEntity
     this.amount = amount;
   }
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "SOURCE_BANK_ACCOUNT_ID")
+  @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "SOURCE_BANK_ACCOUNT_ID", unique = true)
   public BankAccountEntity getSourceBankAccountEntity()
   {
     return sourceBankAccountEntity;
@@ -91,8 +91,8 @@ public class MoneyTransferEntity
     this.sourceBankAccountEntity = sourceBankAccountEntity;
   }
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "TARGET_BANK_ACCOUNT_ID")
+  @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "TARGET_BANK_ACCOUNT_ID", unique = true)
   public BankAccountEntity getTargetBankAccountEntity()
   {
     return targetBankAccountEntity;
@@ -101,5 +101,20 @@ public class MoneyTransferEntity
   public void setTargetBankAccountEntity(BankAccountEntity targetBankAccountEntity)
   {
     this.targetBankAccountEntity = targetBankAccountEntity;
+  }
+
+  @Override
+  public boolean equals(Object o)
+  {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    MoneyTransferEntity that = (MoneyTransferEntity) o;
+    return getId().equals(that.getId());
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(getId());
   }
 }

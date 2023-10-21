@@ -10,7 +10,6 @@ public interface BankAddressMapper
 {
   BankAddressMapper INSTANCE = Mappers.getMapper(BankAddressMapper.class);
   BankAddress fromEntity (BankAddressEntity bankAddressEntity);
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "bankEntity", ignore = true)
   BankAddressEntity toEntity (BankAddress bankAddress);
-}
+  BankAddressEntity copyBankAddressEntity (BankAddressEntity bankAddressEntity);
+  BankAddress copyBankAddress (BankAddress bankAddress);}

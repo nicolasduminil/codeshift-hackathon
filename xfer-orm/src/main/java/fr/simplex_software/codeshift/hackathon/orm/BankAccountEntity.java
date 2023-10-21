@@ -30,10 +30,6 @@ public class BankAccountEntity
   private String transCode;
   @NotNull
   private BankEntity bankEntity;
-  @Valid
-  List<MoneyTransferEntity> sourceMoneyTransferEntityList = new ArrayList<>();
-  @Valid
-  List<MoneyTransferEntity> targetMoneyTransferEntityList = new ArrayList<>();
 
   public BankAccountEntity()
   {
@@ -52,7 +48,7 @@ public class BankAccountEntity
   @Id
   @SequenceGenerator(name = "bankAccountSequence", sequenceName = "bankAccountId_seq", allocationSize = 1, initialValue = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bankAccountSequence")
-  @Column(name = "BANK_ACCOUNT_ID", nullable = false, updatable = false)
+  @Column(name = "BANK_ACCOUNT_ID", unique = true, nullable = false, updatable = false, length = 8)
   public Long getId()
   {
     return id;
@@ -118,8 +114,8 @@ public class BankAccountEntity
     this.transCode = transCode;
   }
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="BANK_ID")
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "BANK_ID", updatable = false, insertable = false)
   public BankEntity getBankEntity()
   {
     return bankEntity;
@@ -130,27 +126,20 @@ public class BankAccountEntity
     this.bankEntity = bankEntity;
   }
 
-  @OneToMany(mappedBy = "sourceBankAccountEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-  public List<MoneyTransferEntity> getSourceMoneyTransferEntityList()
+  @Override
+  public boolean equals(Object o)
   {
-    return sourceMoneyTransferEntityList;
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+    BankAccountEntity that = (BankAccountEntity) o;
+    return getId().equals(that.getId());
   }
 
-  public void setSourceMoneyTransferEntityList (List<MoneyTransferEntity> sourceMoneyTransferEntityList)
+  @Override
+  public int hashCode()
   {
-    this.sourceMoneyTransferEntityList.clear();
-    this.sourceMoneyTransferEntityList.addAll(sourceMoneyTransferEntityList);
-  }
-
-  @OneToMany(mappedBy = "targetBankAccountEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-  public List<MoneyTransferEntity> getTargetMoneyTransferEntityList()
-  {
-    return targetMoneyTransferEntityList;
-  }
-
-  public void setTargetMoneyTransferEntityList (List<MoneyTransferEntity> targetMoneyTransferEntityList)
-  {
-    this.targetMoneyTransferEntityList.clear();
-    this.targetMoneyTransferEntityList.addAll(targetMoneyTransferEntityList);
+    return Objects.hash(getId());
   }
 }

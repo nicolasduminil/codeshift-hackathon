@@ -14,4 +14,6 @@ public interface BankAccountMapper
   @Mapping(target = "bankEntity", source = "bank")
   @Mapping(target = "id", ignore = true)
   BankAccountEntity toEntity (BankAccount bankAccount);
+  BankAccountEntity copyBankAccountEntity (BankAccountEntity bankAccountEntity);
+  BankAccount copyBankAccount (BankAccount bankAccount);
 }

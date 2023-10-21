@@ -1,6 +1,5 @@
 package fr.simplex_software.codeshift.hackathon.orm;
 
-import jakarta.json.bind.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.*;
 import jakarta.validation.constraints.*;
@@ -19,26 +18,22 @@ public class BankEntity
   private String bankName;
   @Valid
   private List<BankAddressEntity> bankAddressEntityList = new ArrayList<>();
-  @Valid
-  private List<BankAccountEntity> bankAccountEntityList = new ArrayList<>();
 
   public BankEntity()
   {
   }
 
-  public BankEntity(@NotBlank String bankName, @Valid List<BankAddressEntity> bankAddressEntityList, @Valid List<BankAccountEntity> bankAccountEntityList)
+  public BankEntity(@NotBlank String bankName, @Valid List<BankAddressEntity> bankAddressEntityList)
   {
     this.bankName = bankName;
     this.bankAddressEntityList.clear();
     this.bankAddressEntityList.addAll(bankAddressEntityList);
-    this.bankAccountEntityList.clear();
-    this.bankAccountEntityList.addAll(bankAccountEntityList);
   }
 
   @Id
   @SequenceGenerator(name = "bankSequence", sequenceName = "bankId_seq", allocationSize = 1, initialValue = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bankSequence")
-  @Column(name = "BANK_ID", nullable = false, updatable = false)
+  @Column(name = "BANK_ID", unique = true, nullable = false, updatable = false, length = 8)
   public Long getId()
   {
     return id;
@@ -60,8 +55,14 @@ public class BankEntity
     this.bankName = bankName;
   }
 
-  @OneToMany(mappedBy = "bankEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonbTransient
+  @ElementCollection
+  @CollectionTable (name = "BANK_ADDRESSES")
+  @AttributeOverride(name = "streetName", column = @Column (name = "STREET_NAME", nullable = false, length = 80))
+  @AttributeOverride(name = "streetNumber", column = @Column (name = "STREET_NUMBER", nullable = false, length = 10))
+  @AttributeOverride(name = "cityName", column = @Column (name = "CITY_NAME", nullable = false, length = 40))
+  @AttributeOverride(name = "poBox", column = @Column (name = "PO_BOX", nullable = false, length = 10))
+  @AttributeOverride(name = "zipCode", column = @Column (name = "ZIP_CODE", nullable = false, length = 10))
+  @AttributeOverride(name = "countryName", column = @Column (name = "COUNTRY_NAME", nullable = false, length = 20))
   public List<BankAddressEntity> getBankAddressEntities()
   {
     return bankAddressEntityList;
@@ -75,36 +76,27 @@ public class BankEntity
   public void addBankAddressEntity(@Valid BankAddressEntity bankAddressEntity)
   {
     bankAddressEntityList.add(bankAddressEntity);
-    bankAddressEntity.setBankEntity(this);
   }
 
   public void removeBankAddressEntity(@Valid BankAddressEntity bankAddressEntity)
   {
     bankAddressEntityList.remove(bankAddressEntity);
-    bankAddressEntity.setBankEntity(null);
   }
 
-  @OneToMany(mappedBy = "bankEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonbTransient
-  public List<BankAccountEntity> getBankAccountEntities()
+  @Override
+  public boolean equals(Object o)
   {
-    return bankAccountEntityList;
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+    BankEntity that = (BankEntity) o;
+    return getId().equals(that.getId());
   }
 
-  public void setBankAccountEntities(@Valid List<BankAccountEntity> bankAccountEntityList)
+  @Override
+  public int hashCode()
   {
-    this.bankAccountEntityList = bankAccountEntityList;
-  }
-
-  public void addBankAccountEntity(@Valid BankAccountEntity bankAccountEntity)
-  {
-    bankAccountEntityList.add(bankAccountEntity);
-    bankAccountEntity.setBankEntity(this);
-  }
-
-  public void removeBankAccountEntity(@Valid BankAccountEntity bankAccountEntity)
-  {
-    bankAccountEntityList.remove(bankAccountEntity);
-    bankAccountEntity.setBankEntity(null);
+    return Objects.hash(getId());
   }
 }
