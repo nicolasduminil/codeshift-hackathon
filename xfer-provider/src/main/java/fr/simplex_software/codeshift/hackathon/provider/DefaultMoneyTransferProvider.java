@@ -3,11 +3,14 @@ package fr.simplex_software.codeshift.hackathon.provider;
 import fr.simplex_software.codeshift.hackathon.api.*;
 import fr.simplex_software.codeshift.hackathon.model.*;
 import jakarta.enterprise.context.*;
+import jakarta.enterprise.inject.*;
 
 import java.util.*;
 import java.util.concurrent.*;
 
 @ApplicationScoped
+@Alternative
+@InMemory
 public class DefaultMoneyTransferProvider implements MoneyTransferFacade
 {
   private final Map<String, MoneyTransfer> moneyTransferMap = new ConcurrentHashMap<>();

@@ -3,6 +3,7 @@ package fr.simplex_software.codeshift.hackathon.s3;
 import com.amazonaws.services.s3.*;
 import com.amazonaws.services.s3.model.*;
 import jakarta.enterprise.context.*;
+import org.apache.camel.*;
 import org.apache.camel.builder.*;
 import org.eclipse.microprofile.config.inject.*;
 
@@ -35,8 +36,9 @@ public class S3ToSqsRoute extends RouteBuilder
   public void configure()
   {
     from(aws2S3(s3BucketName).useDefaultCredentialsProvider(true))
+      .log(LoggingLevel.INFO, "*** We got an XML message: ${body}")
       .split().tokenizeXML("moneyTransfer").streaming()
-      .to(aws2Sqs(queueName).autoCreateQueue(true).useDefaultCredentialsProvider(true).region("eu-west-3"));
+      .to(aws2Sqs(queueName).autoCreateQueue(true).useDefaultCredentialsProvider(true));
   }
 
   public String getS3BucketName()

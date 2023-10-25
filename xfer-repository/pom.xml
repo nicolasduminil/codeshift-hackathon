@@ -36,6 +36,10 @@
       <artifactId>quarkus-junit5-mockito</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>fr.simplex-software.codeshift.hackathon</groupId>
+      <artifactId>xfer-api</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <finalName>${project.artifactId}</finalName>

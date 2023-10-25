@@ -8,7 +8,7 @@ import io.restassured.common.mapper.*;
 import io.restassured.http.*;
 import io.restassured.response.*;
 import io.restassured.specification.*;
-import org.jboss.resteasy.reactive.*;
+import org.apache.http.*;
 import org.junit.jupiter.api.*;
 
 import java.math.*;
@@ -74,7 +74,7 @@ public class TestMoneyTransferResource
       .body(moneyTransfer)
       .post()
       .then()
-      .statusCode(RestResponse.StatusCode.CREATED)
+      .statusCode(HttpStatus.SC_CREATED)
       .body(is(notNullValue()));
   }
 
@@ -85,7 +85,7 @@ public class TestMoneyTransferResource
     Response response = requestSpecification.when()
       .get()
       .then()
-      .statusCode(RestResponse.StatusCode.OK)
+      .statusCode(HttpStatus.SC_CREATED)
       .extract().response();
     assertThat(response).isNotNull();
     List<MoneyTransfer> moneyTransfers = response.as(new TypeRef<List<MoneyTransfer>>() {});
@@ -105,7 +105,7 @@ public class TestMoneyTransferResource
       .pathParam("ref", "reference")
       .get("{ref}")
       .then()
-      .statusCode(RestResponse.StatusCode.OK)
+      .statusCode(HttpStatus.SC_OK)
       .extract().response();
     assertThat(response).isNotNull();
     MoneyTransfer moneyTransfer = response.as(MoneyTransfer.class);
@@ -133,7 +133,7 @@ public class TestMoneyTransferResource
       .pathParam("ref", "reference")
       .put("{ref}")
       .then()
-      .statusCode(RestResponse.StatusCode.ACCEPTED)
+      .statusCode(HttpStatus.SC_ACCEPTED)
       .body(is(notNullValue()));
   }
 
@@ -144,7 +144,7 @@ public class TestMoneyTransferResource
       .pathParam("ref", "reference")
       .delete("{ref}")
       .then()
-      .statusCode(RestResponse.StatusCode.OK)
+      .statusCode(HttpStatus.SC_OK)
       .body(is(notNullValue()));
   }
 }

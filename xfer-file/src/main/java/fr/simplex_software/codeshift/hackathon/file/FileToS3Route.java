@@ -33,7 +33,8 @@ public class FileToS3Route extends RouteBuilder
     onException(IOException.class)
       .handled(true)
       .log(LoggingLevel.ERROR, exMsg + " ${exception.message}");
-    fromF("file://%s?include=.*.xml&delete=true&idempotent=true&bridgeErrorHandler=true", inBox)
+    fromF("file://%s?include=.*.xml&delete=true&bridgeErrorHandler=true", inBox)
+      .log(LoggingLevel.INFO, "*** We got the file ${headers.CamelFileName}")
       .doTry()
       .to("validator:xsd/money-transfers.xsd")
       .setHeader(AWS2S3Constants.KEY, header(FileConstants.FILE_NAME))
