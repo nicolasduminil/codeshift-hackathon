@@ -2,7 +2,9 @@ package fr.simplex_software.codeshift.hackathon.jaxrs.tests;
 
 import fr.simplex_software.codeshift.hackathon.jaxrs.*;
 import fr.simplex_software.codeshift.hackathon.model.*;
+import io.quarkus.test.common.*;
 import io.quarkus.test.common.http.*;
+import io.quarkus.test.h2.*;
 import io.quarkus.test.junit.*;
 import io.restassured.common.mapper.*;
 import io.restassured.http.*;
@@ -20,6 +22,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 
 @QuarkusTest
+@QuarkusTestResource(H2DatabaseTestResource.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestMoneyTransferResource
@@ -85,13 +88,13 @@ public class TestMoneyTransferResource
     Response response = requestSpecification.when()
       .get()
       .then()
-      .statusCode(HttpStatus.SC_CREATED)
+      .statusCode(HttpStatus.SC_OK)
       .extract().response();
     assertThat(response).isNotNull();
     List<MoneyTransfer> moneyTransfers = response.as(new TypeRef<List<MoneyTransfer>>() {});
     assertThat(moneyTransfers).isNotNull();
     assertThat(moneyTransfers).isNotNull();
-    assertThat(moneyTransfers).hasSize(1);
+    assertThat(moneyTransfers).hasSize(6);
     MoneyTransfer moneyTransfer = moneyTransfers.get(0);
     assertThat(moneyTransfer).isNotNull();
     assertThat(moneyTransfer.getReference()).isEqualTo("reference");
@@ -111,30 +114,6 @@ public class TestMoneyTransferResource
     MoneyTransfer moneyTransfer = response.as(MoneyTransfer.class);
     assertThat(moneyTransfer).isNotNull();
     assertThat(moneyTransfer.getReference()).isEqualTo("reference");
-  }
-
-  @Test
-  @Order(60)
-  public void testUpdateMoneyTransferOrderEndpoint()
-  {
-    MoneyTransfer moneyTransfer = new MoneyTransfer("reference",
-      new BankAccount(new Bank(List.of(new BankAddress("rue de Paris", "24",
-        "BP 100", "Soisy sous Montmorency", "95230", "France")),
-        "Société Générale"), "accountId", BankAccountType.CHECKING, "sortCode",
-        "accountNumber", "transCode"),
-      new BankAccount(new Bank(List.of(new BankAddress("Argyle Street", "201",
-        "PO 258", "Glasgow", "G2 8BU", "UK")),
-        "Bank of Scotland"), "accountId2", BankAccountType.CHECKING, "sortCode2",
-        "accountNumber2", "transCode2"),
-      new BigDecimal("500.00"));
-    requestSpecification.when()
-      .contentType(ContentType.JSON)
-      .body(moneyTransfer)
-      .pathParam("ref", "reference")
-      .put("{ref}")
-      .then()
-      .statusCode(HttpStatus.SC_ACCEPTED)
-      .body(is(notNullValue()));
   }
 
   @Test

@@ -2,6 +2,8 @@ package fr.simplex_software.codeshift.hackathon.orm.tests;
 
 import fr.simplex_software.codeshift.hackathon.orm.*;
 import fr.simplex_software.codeshift.hackathon.model.*;
+import io.quarkus.test.common.*;
+import io.quarkus.test.h2.*;
 import io.quarkus.test.junit.*;
 import jakarta.inject.*;
 import jakarta.persistence.*;
@@ -14,6 +16,7 @@ import java.util.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 @QuarkusTest
+@QuarkusTestResource(H2DatabaseTestResource.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestEntities
 {
