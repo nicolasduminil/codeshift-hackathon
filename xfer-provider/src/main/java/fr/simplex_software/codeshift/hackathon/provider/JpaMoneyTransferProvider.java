@@ -39,12 +39,6 @@ public class JpaMoneyTransferProvider implements MoneyTransferFacade
   }
 
   @Override
-  public int updateMoneyTransferOrder(String ref, MoneyTransfer moneyTransfer)
-  {
-    return moneyTransferService.updateMoneyTransferOrder(ref, MoneyTransferMapper.INSTANCE.toEntity(moneyTransfer));
-  }
-
-  @Override
   public long deleteMoneyTransferOrder(String ref)
   {
     return moneyTransferService.deleteMoneyTransferOrderByReference(ref);

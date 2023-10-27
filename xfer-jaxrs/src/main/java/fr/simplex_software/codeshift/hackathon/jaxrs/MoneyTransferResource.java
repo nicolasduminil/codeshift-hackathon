@@ -54,7 +54,6 @@ public class MoneyTransferResource
     content = @Content(mediaType = APPLICATION_JSON))
   @APIResponseSchema(value = MoneyTransfer.class, responseDescription = "Money transfer orders list", responseCode = "200")
   @Metered(name = "Get money transfer orders", unit = MetricUnits.MINUTES, description = "Metric to monitor the frequency of the getMoneyTransferOrders endpoint invocations", absolute = true)
-  @Timeout(300)
   public Response getMoneyTransferOrders()
   {
     log.info("### MoneyTransferResource.getMoneyTransferOrders(): Getting all money transfer orders");
@@ -95,23 +94,6 @@ public class MoneyTransferResource
     uriBuilder.path(ref);
     log.info("### MoneyTransferResource.createMoneyTransferOrder(): The money transfer order having the reference {} has been created", moneyTransfer.getReference());
     return Response.created(uriBuilder.build()).build();
-  }
-
-  @PUT
-  @Path("{ref}")
-  @Consumes(APPLICATION_JSON)
-  @Produces(APPLICATION_JSON)
-  @Operation(description = "Update a money transfer order")
-  @APIResponse(responseCode = "404", description = "The money transfer order does not exist",
-    content = @Content(mediaType = APPLICATION_JSON))
-  @APIResponseSchema(value = MoneyTransfer.class, responseDescription = "The Money transfer orderhas been updated", responseCode = "200")
-  @Metered(name = "Update a money transfer order", unit = MetricUnits.MINUTES, description = "Metric to monitor the frequency of the updateMoneyTransferOrder endpoint invocations", absolute = true)
-  @CircuitBreaker(successThreshold = 5, requestVolumeThreshold = 4, failureRatio = 0.75, delay = 1000)
-  public Response updateMoneyTransferOrder(@PathParam("ref")String ref, MoneyTransfer moneyTransfer)
-  {
-    log.info("### MoneyTransferResource.updateMoneyTransferOrder(): Updating the money transfer order having reference {}", ref);
-    moneyTransferFacade.updateMoneyTransferOrder(ref, moneyTransfer);
-    return Response.accepted().build();
   }
 
   @DELETE

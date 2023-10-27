@@ -1,10 +1,12 @@
 package fr.simplex_software.codeshift.hackathon.service;
 
+import fr.simplex_software.codeshift.hackathon.model.*;
 import fr.simplex_software.codeshift.hackathon.orm.*;
 import fr.simplex_software.codeshift.hackathon.repository.*;
 import jakarta.enterprise.context.*;
 import jakarta.inject.*;
 
+import java.security.*;
 import java.util.*;
 
 @ApplicationScoped
@@ -26,11 +28,6 @@ public class MoneyTransferService
   public Optional<MoneyTransferEntity> getMoneyTransferOrder(String reference)
   {
     return moneyTransferRepository.findByReference(reference);
-  }
-
-  public int updateMoneyTransferOrder(String ref, MoneyTransferEntity moneyTransferEntity)
-  {
-    return moneyTransferRepository.updateMoneyTransferOrder(ref, moneyTransferEntity);
   }
 
   public void deleteMoneyTransferOrder(Long id)

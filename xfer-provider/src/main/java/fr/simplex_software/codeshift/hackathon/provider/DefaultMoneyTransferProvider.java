@@ -36,13 +36,6 @@ public class DefaultMoneyTransferProvider implements MoneyTransferFacade
   }
 
   @Override
-  public int updateMoneyTransferOrder(String ref, MoneyTransfer moneyTransfer)
-  {
-    moneyTransferMap.put(ref, moneyTransfer);
-    return 0;
-  }
-
-  @Override
   public long deleteMoneyTransferOrder(String ref)
   {
     moneyTransferMap.remove(ref);

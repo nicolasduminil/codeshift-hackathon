@@ -1,7 +1,10 @@
 package fr.simplex_software.codeshift.hackathon.repository;
 
+import fr.simplex_software.codeshift.hackathon.mapping.*;
+import fr.simplex_software.codeshift.hackathon.model.*;
 import fr.simplex_software.codeshift.hackathon.orm.*;
 import io.quarkus.hibernate.orm.panache.*;
+import io.quarkus.panache.common.*;
 import jakarta.enterprise.context.*;
 import jakarta.transaction.*;
 
@@ -24,12 +27,6 @@ public class MoneyTransferRepository implements PanacheRepository<MoneyTransferE
   public List<MoneyTransferEntity> getMoneyTransferOrders()
   {
     return listAll();
-  }
-
-  @Transactional
-  public int updateMoneyTransferOrder (String ref, MoneyTransferEntity moneyTransferEntity)
-  {
-    return update(ref, moneyTransferEntity);
   }
 
   @Transactional

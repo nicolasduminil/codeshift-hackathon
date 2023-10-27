@@ -10,6 +10,5 @@ public interface MoneyTransferFacade extends Serializable
   List<MoneyTransfer> getMoneyTransferOrders();
   Optional<MoneyTransfer> getMoneyTransferOrder(String reference);
   String createMoneyTransferOrder(MoneyTransfer moneyTransfer);
-  int updateMoneyTransferOrder(String ref, MoneyTransfer moneyTransfer);
   long deleteMoneyTransferOrder(String ref);
 }
