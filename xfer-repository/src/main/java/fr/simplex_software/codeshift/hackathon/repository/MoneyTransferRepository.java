@@ -1,6 +1,5 @@
 package fr.simplex_software.codeshift.hackathon.repository;
 
-import fr.simplex_software.codeshift.hackathon.mapping.*;
 import fr.simplex_software.codeshift.hackathon.orm.*;
 import io.quarkus.hibernate.orm.panache.*;
 import jakarta.enterprise.context.*;
@@ -28,17 +27,20 @@ public class MoneyTransferRepository implements PanacheRepository<MoneyTransferE
   }
 
   @Transactional
-  public void updateMoneyTransferOrder (Long id, MoneyTransferEntity moneyTransferEntity)
+  public int updateMoneyTransferOrder (String ref, MoneyTransferEntity moneyTransferEntity)
   {
-    MoneyTransferEntity mteToUpdate = findById(id);
-    mteToUpdate = MoneyTransferMapper.INSTANCE.copyMoneyTransferEntity(moneyTransferEntity);
-    getEntityManager().merge(mteToUpdate);
+    return update(ref, moneyTransferEntity);
   }
 
   @Transactional
   public void deleteMoneyTransferOrder (Long id)
   {
-    //MoneyTransferEntity moneyTransferEntity = findById(id);
     deleteById(id);
+  }
+
+  @Transactional
+  public long deleteMoneyTransferOrderByReference (String ref)
+  {
+    return delete("reference", ref);
   }
 }

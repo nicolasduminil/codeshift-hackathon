@@ -28,10 +28,9 @@ public class MoneyTransferService
     return moneyTransferRepository.findByReference(reference);
   }
 
-  public void updateMoneyTransferOrder(String ref, MoneyTransferEntity moneyTransferEntity)
+  public int updateMoneyTransferOrder(String ref, MoneyTransferEntity moneyTransferEntity)
   {
-    MoneyTransferEntity mteToUpdate = moneyTransferRepository.findByReference(ref).orElseThrow();
-    moneyTransferRepository.updateMoneyTransferOrder(mteToUpdate.getId(), moneyTransferEntity);
+    return moneyTransferRepository.updateMoneyTransferOrder(ref, moneyTransferEntity);
   }
 
   public void deleteMoneyTransferOrder(Long id)
@@ -39,15 +38,8 @@ public class MoneyTransferService
     moneyTransferRepository.deleteById(id);
   }
 
-  /*public void updateMoneyTransferOrderByReference(String ref, MoneyTransferEntity moneyTransferEntity)
+  public long deleteMoneyTransferOrderByReference(String reference)
   {
-    MoneyTransferEntity mteToUpdate = moneyTransferRepository.findByReference(ref).orElseThrow();
-    moneyTransferRepository.updateMoneyTransferOrder(ref, mteToUpdate);
-  }*/
-
-  public void deleteMoneyTransferOrderByReference(String reference)
-  {
-    MoneyTransferEntity mteToDelete = moneyTransferRepository.findByReference(reference).orElseThrow();
-    moneyTransferRepository.deleteById(mteToDelete.getId());
+    return moneyTransferRepository.deleteMoneyTransferOrderByReference(reference);
   }
 }
