@@ -2,7 +2,7 @@ package fr.simplex_software.codeshift.hackathon.jaxrs;
 
 import fr.simplex_software.codeshift.hackathon.api.*;
 import fr.simplex_software.codeshift.hackathon.model.*;
-import io.quarkus.logging.*;
+import fr.simplex_software.codeshift.hackathon.provider.*;
 import jakarta.enterprise.context.*;
 import jakarta.inject.*;
 import jakarta.ws.rs.*;
@@ -15,10 +15,8 @@ import org.eclipse.microprofile.openapi.annotations.*;
 import org.eclipse.microprofile.openapi.annotations.media.*;
 import org.eclipse.microprofile.openapi.annotations.responses.*;
 import org.slf4j.*;
-import org.slf4j.Logger;
 
 import java.util.*;
-import java.util.logging.*;
 
 import static jakarta.ws.rs.core.MediaType.*;
 

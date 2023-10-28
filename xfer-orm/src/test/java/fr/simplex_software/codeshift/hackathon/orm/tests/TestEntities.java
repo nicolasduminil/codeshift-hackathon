@@ -21,13 +21,14 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 public class TestEntities
 {
   @Inject
-  private EntityManager em;
+  EntityManager em;
 
   @Test
   @Order(10)
   public void testGetAllBanks()
   {
     Query q = em.createQuery("select b from BankEntity b");
+    @SuppressWarnings("unchecked")
     List<BankEntity> banks = q.getResultList();
     banks.forEach(b -> System.out.println ("### Bank id, name: " + b.getId() + " " + b.getBankName()));
     assertThat(banks).isNotNull();
@@ -39,12 +40,12 @@ public class TestEntities
   public void testFindBankByName()
   {
     Query q = em.createQuery("select b from BankEntity b where bankName = 'Société Générale'");
+    @SuppressWarnings("unchecked")
     List<BankEntity> banks = q.getResultList();
     assertThat(banks).isNotNull();
     assertThat(banks.size()).isEqualTo(1);
     BankEntity bankEntity = banks.get(0);
     assertThat(bankEntity.getBankAddressEntities()).isNotNull();
-    //assertThat(bankEntity.getBankAddressEntities().size()).isEqualTo(1);
   }
 
   @Test
@@ -52,6 +53,7 @@ public class TestEntities
   public void testGetMoneyTransfers()
   {
     Query q = em.createQuery("select mt from MoneyTransferEntity mt");
+    @SuppressWarnings("unchecked")
     List<MoneyTransferEntity> moneyTransferEntities = q.getResultList();
     assertThat(moneyTransferEntities).isNotNull();
     assertThat(moneyTransferEntities.size()).isEqualTo(5);
@@ -79,6 +81,7 @@ public class TestEntities
         "poBox", "cityName", "zipCode", "countryName"))), "accountId", BankAccountType.CHECKING, "sortCode", "accountNumber", "transCode"));
     em.persist(moneyTransferEntity);
     Query q = em.createQuery("select mt from MoneyTransferEntity mt");
+    @SuppressWarnings("unchecked")
     List<MoneyTransferEntity> moneyTransferEntities = q.getResultList();
     assertThat(moneyTransferEntities).isNotNull();
     assertThat(moneyTransferEntities.size()).isEqualTo(6);
