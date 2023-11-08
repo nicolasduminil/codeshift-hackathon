@@ -1,7 +1,7 @@
 # Codeshift Hackathon
 
-This project has been submitted to the CodeShift Hackathon contest. It shows four microservices implemented using Apache Camel on Quarkus,
-as follows:
+This project is provided on the purpose of being submitted to the CodeShift Hackathon contest. It shows a micro-services based application implemented using Apache Camel and Quarkus,
+and deployed on Openshift Developer's Sandbox (Openshift Dedicated). The micro-services are as follows:
 
 - ```xfer-file```: this microservice is polling the ```/tmp/input``` local folder and, as soon as an XML file is comming, it store it in an AWS S3 bucket, which name starts with ```mys3``` followed by a random suffix.
 - ```xfer-s3```: this microservice is listening on the first found AWS S3 bucket which name starts with ```mys3``` and, as soon as an XML file comes in, it splits, tokenizes and streams it, before sending each message to an AWS SQS queue, which name is ```myQue```.
@@ -49,7 +49,7 @@ Here are the steps required to create the Openshift secret:
 
 - Create he Openshift secret containing the AWS access key ID and secret access key:
 
-      $ kubectl apply -f aws-secret.yaml
+      $ oc apply -f aws-secret.yaml
 
 ### Start the microservices
 
@@ -63,6 +63,77 @@ In order to follow the microservices execution run the commands below:
 
     $ oc get pods
     $ oc logs <pod-id>
+
+For example:
+
+    $ oc get pods
+    NAME                          READY   STATUS      RESTARTS   AGE
+    postgresql-6668b8dff6-z84sd   1/1     Running     0          3m37s
+    xfer-file-1-build             0/1     Completed   0          2m58s
+    xfer-file-1-deploy            0/1     Completed   0          2m18s
+    xfer-file-1-x5477             1/1     Running     0          2m17s
+    xfer-jaxrs-1-build            0/1     Completed   0          46s
+    xfer-jaxrs-1-d88fg            1/1     Running     0          6s
+    xfer-jaxrs-1-deploy           0/1     Completed   0          7s
+    xfer-s3-1-build               0/1     Completed   0          2m13s
+    xfer-s3-1-deploy              0/1     Completed   0          95s
+    xfer-s3-1-xgnht               1/1     Running     0          94s
+    xfer-sqs-1-449ng              1/1     Running     0          51s
+    xfer-sqs-1-build              0/1     Completed   0          90s
+    xfer-sqs-1-deploy             0/1     Completed   0          52s
+
+Here, for each micro-services, we got three running pods: a "build" one, a "deploy" one and an application one.
+
+To look in the log file for the pod `xfer-jaxrs-1-d88fg`, for example, use the following command:
+
+    $ oc logs xfer-jaxrs--1-d88fg --follow
+
+In the beggining, the log file doesn't contain any relevant message.
+
+### Observing the PostgreSQL database
+
+To inspect the content of the associated PostgreSQL database, do the following:
+
+    $ oc rsh postgresql-6668b8dff6-z84sd
+    sh-4.4$ PGPASSWORD=xfer psql -h postgresql xferdb xfer
+    psql (15.3)
+    Type "help" for help.
+
+Now we have opened a PSQL session to our database. In order to see its content, do that:
+
+    xferdb=> \dt           
+                   List of relations
+    Schema |         Name          | Type  | Owner
+    --------+-----------------------+-------+-------
+    public | bank_accounts         | table | xfer
+    public | bank_addresses        | table | xfer
+    public | banks                 | table | xfer
+    public | money_transfer_orders | table | xfer
+    (4 rows)
+
+The previous command displays all the tables that exist in the current schema. To browse these tables, you can use SQL statement, like for example:
+
+    xferdb=> select * from money_transfer_orders;
+
+But at this stage, the tables are empty.
+
+### Triggering the Apache Camel routes
+
+Now, that our Apache Camel route are started and listening, we need to transfer an XML file, containing money transfer orders, in the input folder. We provide a script to perform this operation:
+
+    $ ./copy-xml-file.sh
+
+After having ran this script, repeating the statements above will show 5 new rcords in the `money_transfer_orders` table. Also, looking in the pod log files will show relevant messages.
+
+### Testing with Swagger
+
+We have included in the project a Swagger interface in order to facilitate the REST API testing. Get the micro-service endpoint as follows:
+
+     $ oc get routes
+     NAME         HOST/PORT                                                                 PATH   SERVICES     PORT   TERMINATION   WILDCARD
+     xfer-jaxrs   xfer-jaxrs-nicolasduminil-dev.apps.sandbox-m3.1530.p1.openshiftapps.com          xfer-jaxrs   http                 None
+
+Now you can use your prefered browser to go to `http://xfer-jaxrs-nicolasduminil-dev.apps.sandbox-m3.1530.p1.openshiftapps.com/q/swagger-ui`
 
 ### Stop the microservices
 
