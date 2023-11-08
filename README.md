@@ -8,6 +8,10 @@ and deployed on Openshift Developer's Sandbox (Openshift Dedicated). The micro-s
 - ```xfer-sqs```: this microservice subscribes for messages to the AWS SQS queue named ```myQueue``` and, for each incoming message, unmarshall it from XML to Java objects, the marshal it to JSON format, before sending it to the REST service below.
 - ```xfer-jaxrs```: this microservice exposes a REST API having endpoint for CRUDing money transfer orders. It consumes/produces JSON input/output data. It uses a service which exposes and interface defined by ```xfer-api``` project. Several implementations of this interface might be present but, for simplicity sake, in the current case we're using the one defined by ```xfer-provider``` project, named ```DefaultMoneyTransferProvider```, which only CRUds the money transfer order requests in an in-memory hash map.
 
+The figure below shows the processing diagram of these micro-services.
+
+![The Money Transfer micro-services diagram](xfer.png)
+
 ## Deploying and running the microservices in Openshift
 
 In order to deploy and run the miroservices in Openshift, proceed as follows:
@@ -56,6 +60,12 @@ Here are the steps required to create the Openshift secret:
 In order to start the microservices, run the following script:
 
     $ ./start-ms.sh
+
+This script will deploy the application on `Openshift Developer's Sandbox`. Its execution may take
+sometime. Once this command finished, go to the `Openshift Developer's Sandbox` console and, in the 
+`Developer` perspective, click on `Topology` in the leftmost navigation pane. You should see something like below:
+
+![Openshift Developer's Sandbox: Developer->Topology](openshift-dcs.png)
 
 ### Observe the log files
 
@@ -124,6 +134,23 @@ Now, that our Apache Camel route are started and listening, we need to transfer 
     $ ./copy-xml-file.sh
 
 After having ran this script, repeating the statements above will show 5 new rcords in the `money_transfer_orders` table. Also, looking in the pod log files will show relevant messages.
+
+### Modifying the deployment config
+
+We can interactivelly modify our DCs such that, for example, to scale the micro-services. the following command:
+
+    $ oc scale dc xfer-jaxrs --replicas=2
+    W1108 16:17:56.353206   58225 warnings.go:70] apps.openshift.io/v1 DeploymentConfig is deprecated in v4.14+, unavailable in v4.10000+
+    W1108 16:17:56.449290   58225 warnings.go:70] extensions/v1beta1 Scale is deprecated in v1.2+, unavailable in v1.16+
+    deploymentconfig.apps.openshift.io/xfer-jaxrs scaled
+
+scales the REST API micro-services from 1 to 2 running instances. Now, going back to the `Openshift Developer's Sandbox`
+console, clicking on `Developer -> Topology` and selecting the `xfer-jaxrs` pod, you should see something like in
+the figure below:
+
+![Scaling pods](pods.png)
+
+As you can see, there are now two running instances of the `xfer-jaxrs` micro-service.
 
 ### Testing with Swagger
 
