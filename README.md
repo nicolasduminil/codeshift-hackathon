@@ -183,7 +183,11 @@ We have included in the project a Swagger interface in order to facilitate the R
      NAME         HOST/PORT                                                                 PATH   SERVICES     PORT   TERMINATION   WILDCARD
      xfer-jaxrs   xfer-jaxrs-nicolasduminil-dev.apps.sandbox-m3.1530.p1.openshiftapps.com          xfer-jaxrs   http                 None
 
-Now you can use your prefered browser to go to `http://xfer-jaxrs-nicolasduminil-dev.apps.sandbox-m3.1530.p1.openshiftapps.com/q/swagger-ui`
+Now you can use your prefered browser to go to `http://xfer-jaxrs-nicolasduminil-dev.apps.sandbox-m3.1530.p1.openshiftapps.com/q/swagger-ui`.
+
+The following figure shows the Swagger interface:
+
+![Swagger](swagger2.png)
 
 ### Stop the microservices
 
