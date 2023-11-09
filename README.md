@@ -1,4 +1,5 @@
 # Codeshift Hackathon
+[![GitHub](https://img.shields.io/github/license/nicolasduminil/payara-hackathon)](https://github.com/nicolasduminil/codeshift-hackathon/blob/master/LICENSE)
 
 This project is provided on the purpose of being submitted to the CodeShift Hackathon contest. It shows a micro-services based application implemented using Apache Camel and Quarkus,
 and deployed on Openshift Developer's Sandbox (Openshift Dedicated). The micro-services are as follows:
