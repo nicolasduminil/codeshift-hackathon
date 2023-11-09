@@ -2,7 +2,9 @@
 [![GitHub](https://img.shields.io/github/license/nicolasduminil/codeshift-hackathon)](https://github.com/nicolasduminil/codeshift-hackathon/blob/master/LICENSE)
 
 This project is provided on the purpose of being submitted to the CodeShift Hackathon contest. It shows a micro-services based application implemented using Apache Camel and Quarkus,
-and deployed on Openshift Developer's Sandbox (Openshift Dedicated). The micro-services are as follows:
+and deployed on Openshift Developer's Sandbox (Openshift Dedicated). 
+
+The whole project is structured as a `maven` multi-module one, having a master POM and a module dedicated to each microservice as follows:
 
 - ```xfer-file```: this microservice is polling the ```/tmp/input``` local folder and, as soon as an XML file is comming, it store it in an AWS S3 bucket, which name starts with ```mys3``` followed by a random suffix.
 - ```xfer-s3```: this microservice is listening on the first found AWS S3 bucket which name starts with ```mys3``` and, as soon as an XML file comes in, it splits, tokenizes and streams it, before sending each message to an AWS SQS queue, which name is ```myQue```.
@@ -12,6 +14,26 @@ and deployed on Openshift Developer's Sandbox (Openshift Dedicated). The micro-s
 The figure below shows the processing diagram of these micro-services.
 
 ![The Money Transfer micro-services diagram](xfer.png)
+
+In addition to these `maven` modules, there are some other that don't implement any microservice but shared libraries:
+
+- `xfer-api`: this module defines the REST API interface used by the `xfer-jaxrs` microservice;
+- `xfer-model`: this module defines the domain layer. The business objects are defined in XML files, described by the `xfer-model/src/main/resources/xsd/money-transfers.xsd` schema. We use the `jaxb2-maven-plugin` to generate Java objects from the XML files.
+- `xfer-provider`: this module defines the implemnations of the `xfer-api` interface. There are two implemenations: a default one storing the money transfer order in a in-memory map and a 2nd one using JPA to store them in a PostgreSQL database;
+- `xfer-orm`: this module defines the JPA entities associated to the domain model;
+- `xfer-mapping`: this module defines the mapping operations between the domain model and its JPA equivalent;
+- `xfer-repository`: this module defines Quarkus Panache repositories toperform persistence operations;
+
+## Unit and integration tests
+
+The project comes with number of unit and integration tests. In order to run them use the following command:
+
+    $ mvn clean surefire-report:report
+
+Here we're using the `surefire-report` maven plugin to package our application after performing the unit and integration
+tests and generate a test report in the file `./target/site/surefire-report.html`.Here is an excerpt of this file content:
+
+![The Surefire test report](report.png)
 
 ## Deploying and running the microservices in Openshift
 
