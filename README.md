@@ -4,6 +4,13 @@
 This project is provided on the purpose of being submitted to the CodeShift Hackathon contest. It shows a micro-services based application implemented using Apache Camel and Quarkus,
 and deployed on Openshift Developer's Sandbox (Openshift Dedicated). 
 
+> **_NOTA BENE:_**  This application, as implemented here, is far from being production ready. It's only a simple text
+> book case, developed in a couple of days and aiming at being presented to this contest, such that to highlight some of
+> the most essential Red Hat technology like Quarkus, Camel and Openshift. Accordingly, the application lacks lots of enterprise
+> grade functionalities like security, optimizations, ergonomic and others.
+> Also, while it tries to demonstrate the Eclipse Microprofile API and their implementations by the Quarkus, the application
+> might do it in a strict "show-case" manner, without having sometimes a real business alignment and justification.
+
 The whole project is structured as a `maven` multi-module one, having a master POM and a module dedicated to each microservice as follows:
 
 - ```xfer-file```: this microservice is polling the ```/tmp/input``` local folder and, as soon as an XML file is comming, it store it in an AWS S3 bucket, which name starts with ```mys3``` followed by a random suffix.
@@ -189,13 +196,107 @@ The following figure shows the Swagger interface:
 
 ![Swagger](swagger2.png)
 
-### Stop the microservices
+## Eclipse Microprofile Features
+
+As a Java stack compliant with the Eclipse Microprofile, Quarkus implements all the specifications' features. In addition to
+APIs coming from Jakarta EE, like CDI, REST, JSON, JPA and others, the application demonstrates some of the most common 
+Eclipse Microprofile features, as follows:
+
+### Eclipse Microprofile Healthcheck
+
+The Eclipse Microprofile Healthcheck specifications allow a service to report the overall status as `UP`, if it is 
+available, or `DOWN` otherwise. In order to perform the health check, use the following command:
+
+    $ curl xfer-jaxrs-nicolasduminil-dev.apps.sandbox-m3.1530.p1.openshiftapps.com/q/health
+    {
+      "status": "UP",
+      "checks": 
+      [
+        {
+          "name": "Liveness health check",
+          "status": "UP"
+        },
+        {
+          "name": "Database connections health check",
+          "status": "UP",
+          "data": 
+          {
+            "<default>": "UP"
+          }
+        },
+        {
+          "name": "Readiness health check",
+          "status": "UP",
+          "data":
+          {
+            "Number of money transfer orders in the datastore": 0
+          }
+        }
+      ]
+    }
+
+The `curl` request above execute the the health-check tests, i.e. the liveness and the readiness
+helsth-check tests, as defines by the Eclipse Micrprofile specs. In order to execute only the liveness or the readiness health-check tests,
+replace the URL above by `.../q/health/ready` or, respectivelly `.../q/live`.
+
+### Eclipse Microprofile Fault Tolerance API
+
+The application is using Eclipse Microprofile Fault Tolerance in order to
+increase its resilience. 
+
+#### Fallbacks
+
+For example, the code below:
+
+    ...
+    @Fallback(fallbackMethod = "fallbackOfGetMoneyTransferOrder")
+    public Response getMoneyTransferOrder(@PathParam("ref") String reference)
+    {
+      log.info("### MoneyTransferResource.getMoneyTransferOrder(): Getting the money transfer order having reference {}", reference);
+      return Response.ok().entity(moneyTransferFacade.getMoneyTransferOrder(reference).orElseThrow()).build();
+    }
+    ...
+
+is stating that, in the case the `getMoneyTransferOrder` endpoint cannot be
+invoked, the `fallbackOfGetMoneyTransfer()` operation should be called instead.
+
+#### Timeouts
+
+Invoking endpoints can take a longtime, especially in clouds. The `@Timeout` 
+annotation allows to avoid the REST service to hang, as shown below:
+
+      @Timeout(250)
+      @Retry(retryOn = TimeoutException.class, maxRetries = 2)
+      public Response createMoneyTransferOrder(MoneyTransfer moneyTransfer, @Context UriInfo uriInfo)
+      { ... }
+
+Here the endpoint execution is limited to processing duration of maximum 250 ms.
+
+### Eclipse Microprofile Metrics API
+
+The application is using Eclipse Microprofile Metrics in order to export 
+monitoring data to management agents. For example:
+
+      @Metered(name = "Create money transfer order", unit = MetricUnits.MINUTES, description = "Metric to monitor the frequency of the createMoneyTransferOrder endpoint invocations", absolute = true)
+      @Timeout(250)
+      @Retry(retryOn = TimeoutException.class, maxRetries = 2)
+      public Response createMoneyTransferOrder(MoneyTransfer moneyTransfer, @Context UriInfo uriInfo)
+      { ... }
+
+Here we define a metric named `Create money transfer order` which counts the 
+number of times that the associated endpoint has been called.
+
+### Eclipse Microprofile OpenAPI
+
+Using the endpoint `.../q/openapi` will show the OpenAPI specifications of our REST service.
+
+## Stop the microservices
 
 In order to stop the microservices, run the following script:
 
     $ ./kill-ms.sh
 
-### Cleaning up the AWS infrastructure
+## Cleaning up the AWS infrastructure
 
 In order to clean up the AWS infrastructure, run the commands below:
 
@@ -203,6 +304,6 @@ In order to clean up the AWS infrastructure, run the commands below:
     $ ./purge-sqs-queue.sh
     $ ./delete-sqs-queue.sh
 
-### Log out from Openshift
+## Log out from Openshift
 
 In order to log out from Openshift unfold your user name in the right upper corner and select `Log out`.

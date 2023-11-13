@@ -2,7 +2,6 @@ package fr.simplex_software.codeshift.hackathon.jaxrs;
 
 import fr.simplex_software.codeshift.hackathon.api.*;
 import fr.simplex_software.codeshift.hackathon.model.*;
-import fr.simplex_software.codeshift.hackathon.provider.*;
 import jakarta.enterprise.context.*;
 import jakarta.inject.*;
 import jakarta.ws.rs.*;
